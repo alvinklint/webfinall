@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGIS Jangkauan Fasilitas Kesehatan - Kuningan</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        background: #0a0f1a;
+        color: rgb(3, 3, 3);
+      }
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background: rgba(10, 15, 26, 0.95);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      header h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 28px;
+        margin: 0;
+        color: #00ffdd;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 6px 14px;
+        border-radius: 6px;
+      }
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-right: 20px;
+      }
+      .btn-group a {
+        color: #000000;
+        text-decoration: none;
+        background: #00ffdd;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background 0.3s ease;
+      }
+      .btn-group a:hover {
+        background: #00ffdd;
+      }
+      #hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-image: url("assets/1.png");
+        background-size: cover;
+        background-position: center;
+        text-align: center;
+        padding: 80px 20px 20px 20px;
+      }
+
+      #hero h2 {
+        font-size: 48px;
+        margin: 0;
+        color: #00ffdd;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      }
+      #hero p {
+        font-size: 18px;
+        color: #e0f7fa;
+        margin: 20px 0;
+        max-width: 600px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      .map-intro {
+        text-align: center;
+        margin-top: 80px;
+      }
+      .map-intro h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 32px;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.08);
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 6px;
+      }
+      #map2 {
+        height: 600px;
+        width: 90%;
+        margin: 40px auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .map-card {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px auto;
+        flex-wrap: wrap;
+      }
+      .map-card .card {
+        background: #1c2a3a;
+        padding: 20px;
+        border-radius: 8px;
+        width: 250px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        transition: 0.3s ease;
+      }
+      .map-card .card:hover {
+        background: #26415a;
+      }
+      .map-card .card h4 {
+        margin: 10px 0 5px;
+        color: #ffffff;
+      }
+      .map-card .card i {
+        font-size: 28px;
+        color: #ffffff;
+      }
+      .section-info {
+        background-color: #162030;
+        padding: 60px 20px;
+        text-align: center;
+      }
+      .section-info h2 {
+        color: #00ffdd;
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      .section-info p {
+        background-color: rgba(255, 255, 255, 0.08);
+        padding: 20px;
+        border-radius: 8px;
+        color: #cfd8dc;
+        font-size: 16px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      footer {
+        background: #0d1b2a;
+        color: #e0e0e0;
+        text-align: center;
+        padding: 40px 20px 20px 20px;
+        font-size: 14px;
+        font-family: "Poppins", sans-serif;
+        border-top: 1px solid #1a2d45;
+      }
+      footer h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #000000;
+      }
+      footer p {
+        margin: 5px 0;
+        color: #000000;
+      }
+      footer .social-icons {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+      }
+      footer .social-icons a {
+        color: #ffffff;
+        background-color: #1e293b;
+        border-radius: 50%;
+        padding: 10px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease, transform 0.3s ease;
+      }
+      footer .social-icons a:hover {
+        background: #000000;
+        transform: scale(1.1);
+      }
+
+      .footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .footer a {
+      color: #1abc9c;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer .author {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #bdc3c7;
+    }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>WebGIS Faskes Kuningan</h1>
+      <div class="btn-group">
+        <a href="#hero">Beranda</a>
+        <a href="#map2">Peta</a>
+        <a href="#data">Data</a>
+        <a href="#footer">Profil</a>
+      </div>
+    </header>
+
+    <section id="hero">
+      <h2>Akses & Keterjangkauan Layanan Kesehatan</h2>
+      <p>
+        WebGIS ini menyajikan informasi jangkauan fasilitas kesehatan secara spasial di Kabupaten Kuningan.
+      </p>
+    </section>
+
+    <div class="map-intro">
+      <h2>Visualisasi Peta</h2>
+    </div>
+
+    <div id="map2">
+      <iframe
+        src="./Peta Jangkes/index.html"
+        width="100%"
+        height="100%"
+        style="border-style: none"
+      ></iframe>
+    </div>
+
+    <section id="video-section" style="padding: 2rem; background-color: #ffffff;">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2 style="text-align: center; margin-bottom: 1rem;">Pentingnya Akses Terhadap Layanan Kesehatan</h2>
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <iframe 
+            width="720" 
+            height="405" 
+            src="https://www.youtube.com/embed/Cjd6d9d5sRg?si=OyUOCl9KE34YNltT"
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+    </section>
+
+    <section id="data" class="section-info fade-in">
+      <h2>Seberapa Mudah Akses Layanan Kesehatan di Kuningan?</h2>
+
+      </div>
+      <p style="max-width: 1000px; margin-top: 30px; text-align: justify;">
+        Berdasarkan hasil pemetaan jangkauan fasilitas kesehatan (faskes) di Kabupaten Kuningan, terdapat ketimpangan distribusi layanan kesehatan antar wilayah. 
+        Wilayah perkotaan seperti Kecamatan Kuningan, Cigugur, dan Cilimus memiliki konsentrasi fasilitas yang tinggi, seperti rumah sakit umum, klinik, dan puskesmas induk, 
+        yang mudah diakses dalam radius 3–5 km. Hal ini berbeda dengan wilayah-wilayah selatan dan perbukitan seperti Ciniru, Subang, Cibeureum, dan Karangkancana yang 
+        hanya memiliki puskesmas pembantu dan terkadang memerlukan waktu tempuh lebih dari 30 menit ke fasilitas utama.        
+        <br><br>
+        Visualisasi ini memperlihatkan bahwa meskipun cakupan faskes secara umum telah menjangkau seluruh kecamatan, namun kualitas, kelengkapan fasilitas, dan 
+        waktu akses bervariasi cukup signifikan. Beberapa daerah masih tergolong rawan dari segi akses layanan kegawatdaruratan karena kondisi geografis 
+        yang menantang serta jarak yang jauh dari rumah sakit rujukan.
+        <br><br>
+        Peta ini diharapkan dapat menjadi acuan bagi pemerintah daerah dan dinas kesehatan dalam mengambil kebijakan pembangunan fasilitas baru, penambahan tenaga medis, 
+        serta peningkatan infrastruktur penunjang layanan kesehatan agar lebih merata dan responsif terhadap kebutuhan masyarakat di seluruh wilayah Kabupaten Kuningan.        
+        <br><br>
+      </p>
+    </section>
+
+    <footer id="footer">
+      <div style="margin-top: 40px; text-align: center">
+        <h3>Tentang Pembuat</h3>
+        <img
+          src="assets/profile.jpeg"
+          alt="Foto Pembuat"
+          style="
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+          "
+        />
+        <h3>Alvin Anugrah Putra</h3>
+        <p style="margin-top: 10px; color: #000000">
+          Website ini dibuat oleh Alvin Anugrah Putra sebagai tugas akhir mata kuliah WebGIS. <br> Bertujuan untuk 
+          memberikan informasi spasial mengenai <br> keterjangkauan fasilitas kesehatan di Kabupaten Kuningan secara
+          interaktif.
+        </p>
+      </div>
+      <h3>Hubungi Saya</h3>
+      <p>Email: alvinanugrahputra@gmail.com</p>
+      <p>Telepon: 0895-3215-25142</p>
+      <div class="social-icons">
+        <a href="https://www.instagram.com/alvinklint_?igsh=d2xmOHRyY3djcjlt" target="_blank"
+          ><i class="fab fa-instagram"></i
+        ></a>
+        <a
+          href="https://www.linkedin.com/in/alvin-anugrah-putra-a75884321?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+          target="_blank"
+          ><i class="fab fa-linkedin-in"></i
+        ></a>
+      </div>
+    </footer>
+
+    <footer id="footer">
+      <div class="footer-content">
+        <p style="margin-top: 10px; font-size: 0.8em;">
+          © 2025 Kabupaten Kuningan. Data disediakan untuk melihat keterjangkauan fasilitas kesehatan. Hak cipta dilindungi.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+    <script src="script.js"></script>
+    <!-- Scroll to Top Button -->
+  <button id="scrollTopBtn" title="Kembali ke atas">↑</button>
+  
+  <script>
+    // Tampilkan tombol ketika scroll lebih dari 300px
+    window.onscroll = function () {
+      const btn = document.getElementById("scrollTopBtn");
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    };
+  
+    document.getElementById("scrollTopBtn").addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
